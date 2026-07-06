@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>스마트폰 가속도 센서 기반 지진 초기 진동 감지 프로토타입</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="top-panel">
+      <p class="label">통합과학 지구과학 탐구 프로젝트</p>
+      <h1>스마트폰 가속도 센서 기반 지진 초기 진동 감지 프로토타입</h1>
+      <p class="warning-text">
+        이 앱은 교육용 실험 프로토타입이며 실제 지진 경보용으로 사용할 수 없습니다.
+        본 앱은 실제 P파를 판별하지 않고, 스마트폰에서 감지되는 순간적인 진동 변화량을 기준으로 경보를 출력합니다.
+      </p>
+    </section>
+
+    <section class="status-panel" aria-live="polite">
+      <div>
+        <p class="section-label">현재 상태</p>
+        <p id="statusText" class="status-text">대기 중 - 센서 시작 버튼을 눌러 주세요.</p>
+      </div>
+      <p id="supportMessage" class="support-message">
+        안드로이드 크롬에서는 HTTPS 주소에서 테스트하는 것을 권장합니다.
+      </p>
+    </section>
+
+    <section class="controls-panel">
+      <button id="startButton" class="primary-button" type="button">센서 시작</button>
+      <button id="stopSensorButton" type="button" disabled>센서 중지</button>
+      <button id="clearAlarmButton" type="button">경보 해제</button>
+      <button id="resetBaselineButton" type="button">기준값 재설정</button>
+      <button id="testAlarmButton" type="button">테스트 경보 실행</button>
+      <button id="saveCsvButton" type="button">CSV 저장</button>
+    </section>
+
+    <section class="threshold-panel">
+      <div class="threshold-header">
+        <div>
+          <p class="section-label">민감도 임계값</p>
+          <p class="threshold-value"><span id="thresholdValue">5.0</span></p>
+        </div>
+        <p class="threshold-help">값이 낮을수록 민감하고, 높을수록 둔감합니다.</p>
+      </div>
+      <input
+        id="thresholdSlider"
+        class="threshold-slider"
+        type="range"
+        min="1"
+        max="12"
+        step="0.1"
+        value="5.0"
+        aria-label="진동 감지 임계값"
+      >
+    </section>
+
+    <section class="data-grid" aria-label="실시간 센서 데이터">
+      <article class="metric">
+        <p>x축 가속도</p>
+        <strong id="xValue">0.00</strong>
+        <span>m/s²</span>
+      </article>
+      <article class="metric">
+        <p>y축 가속도</p>
+        <strong id="yValue">0.00</strong>
+        <span>m/s²</span>
+      </article>
+      <article class="metric">
+        <p>z축 가속도</p>
+        <strong id="zValue">0.00</strong>
+        <span>m/s²</span>
+      </article>
+      <article class="metric">
+        <p>전체 가속도 크기</p>
+        <strong id="magnitudeValue">0.00</strong>
+        <span>magnitude</span>
+      </article>
+      <article class="metric">
+        <p>진동 변화량</p>
+        <strong id="deltaValue">0.00</strong>
+        <span>delta</span>
+      </article>
+      <article class="metric">
+        <p>기준값 대비 변화량</p>
+        <strong id="baselineDeltaValue">0.00</strong>
+        <span>baselineDelta</span>
+      </article>
+      <article class="metric">
+        <p>최고 진동 변화량</p>
+        <strong id="maxDeltaValue">0.00</strong>
+        <span>peak delta</span>
+      </article>
+      <article class="metric">
+        <p>센서 수신 횟수</p>
+        <strong id="motionCountValue">0</strong>
+        <span>valid events</span>
+      </article>
+    </section>
+
+    <section class="detection-panel">
+      <div>
+        <p class="section-label">최근 감지 정보</p>
+        <p id="detectedTime">감지 시각: 없음</p>
+        <p id="detectedDelta">감지 delta: 없음</p>
+        <p id="detectedBaselineDelta">감지 baselineDelta: 없음</p>
+        <p id="lastMotionTime">마지막 센서 수신: 없음</p>
+        <p id="sensorSource">센서 데이터: 대기 중</p>
+      </div>
+    </section>
+
+    <section class="log-panel">
+      <div class="log-header">
+        <div>
+          <p class="section-label">최근 20개 진동 변화량</p>
+          <h2>Delta 기록</h2>
+        </div>
+        <p>막대가 높을수록 순간 변화가 큽니다.</p>
+      </div>
+      <div id="deltaBars" class="delta-bars" aria-label="최근 delta 막대 그래프">
+        <p class="empty-state">아직 기록된 센서 데이터가 없습니다.</p>
+      </div>
+      <ul id="eventLog" class="event-log">
+        <li>경보 감지 기록이 아직 없습니다.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
